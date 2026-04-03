@@ -1,0 +1,35 @@
+# Virtual environment
+venv/
+
+# Python cache files
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# Environment variables (never commit secrets)
+.env
+
+# Trained model files (too large for Git — use Git LFS or upload separately)
+models/*.pkl
+
+# Data files (raw datasets can be large)
+data/raw/
+
+# macOS junk
+.DS_Store
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+
+# Test coverage
+.coverage
+htmlcov/
+
+# Build artifacts
+dist/
+build/
+*.egg-info/
