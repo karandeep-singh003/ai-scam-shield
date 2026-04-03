@@ -1,0 +1,26 @@
+text,label,category,source
+enter your upi pin to receive rs 500 cashback from phonepe,1,pin_harvest,seed
+send rs 1 to verify your account and receive rs 5000 refund,1,advance_fee,seed
+you have a collect request of rs 10 from sbi bank kyc team  accept to complete verification,1,collect_request_fraud,seed
+scan this qr code to receive your prize money of rs 25000,1,qr_scam,seed
+your upi id needs kyc  share otp received on your number to our executive,1,kyc_fraud,seed
+enter pin on google pay to accept refund of rs 2500 from amazon,1,fake_refund,seed
+gpay cashback offer  enter your upi pin to claim rs 200 reward,1,pin_harvest,seed
+dear customer you have pending upi refund  accept collect request from hdfc refund upi,1,collect_request_fraud,seed
+paytm agent  please share your upi pin to process your kyc verification,1,kyc_fraud,seed
+you won phonepe lucky draw  send rs 99 registration fee to upi  prize collect,1,advance_fee,seed
+scan qr to get rs 1000 added to your paytm wallet instantly,1,qr_scam,seed
+your electricity bill refund of rs 850 is ready  enter pin to receive,1,fake_refund,seed
+bhim upi  your account will be deactivated  share pin with our team to reactivate,1,pin_harvest,seed
+accept this collect request of rs 5 to verify your phonepe account,1,collect_request_fraud,seed
+bank refund initiated  please enter your 6 digit upi pin to complete credit,1,pin_harvest,seed
+sent rs 500 to rahul for dinner split via google pay,0,legitimate,seed
+received rs 1500 from mom via phonepe,0,legitimate,seed
+your upi transaction of rs 299 to jio is successful,0,legitimate,seed
+pay your electricity bill easily using bhim upi at your nearest store,0,legitimate,seed
+split the restaurant bill with friends using any upi app,0,legitimate,seed
+your upi payment to swiggy rs 350 is pending due to bank server issue  will auto retry,0,legitimate,seed
+phonepe  you received rs 200 from priya sharma,0,legitimate,seed
+npci  upi services will be briefly unavailable on sunday 2am 4am for maintenance,0,legitimate,seed
+your google pay referral bonus of rs 51 has been credited to your bank account,0,legitimate,seed
+paytm  rs 1000 added to your paytm wallet from your bank account,0,legitimate,seed

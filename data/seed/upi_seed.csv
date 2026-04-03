@@ -1,0 +1,26 @@
+text,label,category
+"Enter your UPI PIN to receive Rs 500 cashback from PhonePe",1,pin_harvest
+"Send Rs 1 to verify your account and receive Rs 5000 refund",1,advance_fee
+"You have a collect request of Rs 10 from SBI Bank KYC team. Accept to complete verification",1,collect_request_fraud
+"Scan this QR code to receive your prize money of Rs 25000",1,qr_scam
+"Your UPI ID needs KYC. Share OTP received on your number to our executive",1,kyc_fraud
+"Enter PIN on Google Pay to accept refund of Rs 2500 from Amazon",1,fake_refund
+"GPay cashback offer: Enter your UPI PIN to claim Rs 200 reward",1,pin_harvest
+"Dear customer you have pending UPI refund. Accept collect request from HDFC-REFUND@upi",1,collect_request_fraud
+"Paytm agent: Please share your UPI PIN to process your KYC verification",1,kyc_fraud
+"You won PhonePe lucky draw. Send Rs 99 registration fee to UPI: prize@collect",1,advance_fee
+"Scan QR to get Rs 1000 added to your Paytm wallet instantly",1,qr_scam
+"Your electricity bill refund of Rs 850 is ready. Enter PIN to receive",1,fake_refund
+"BHIM UPI: Your account will be deactivated. Share PIN with our team to reactivate",1,pin_harvest
+"Accept this collect request of Rs 5 to verify your PhonePe account",1,collect_request_fraud
+"Bank refund initiated. Please enter your 6 digit UPI PIN to complete credit",1,pin_harvest
+"Sent Rs 500 to Rahul for dinner split via Google Pay",0,legitimate
+"Received Rs 1500 from mom via PhonePe",0,legitimate
+"Your UPI transaction of Rs 299 to Jio is successful",0,legitimate
+"Pay your electricity bill easily using BHIM UPI at your nearest store",0,legitimate
+"Split the restaurant bill with friends using any UPI app",0,legitimate
+"Your UPI payment to Swiggy Rs 350 is pending due to bank server issue. Will auto-retry",0,legitimate
+"PhonePe: You received Rs 200 from Priya Sharma",0,legitimate
+"NPCI: UPI services will be briefly unavailable on Sunday 2am-4am for maintenance",0,legitimate
+"Your Google Pay referral bonus of Rs 51 has been credited to your bank account",0,legitimate
+"Paytm: Rs 1000 added to your Paytm wallet from your bank account",0,legitimate
