@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>AI Scam Shield</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #0f1117;
+    color: #e2e8f0;
+    min-height: 100vh;
+  }
+
+  /* ── Header ── */
+  .header {
+    background: linear-gradient(135deg, #1a1f2e 0%, #16213e 100%);
+    border-bottom: 1px solid #2d3748;
+    padding: 20px 40px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .header-icon {
+    width: 42px; height: 42px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+  }
+  .header h1 { font-size: 22px; font-weight: 700; color: #fff; }
+  .header p  { font-size: 13px; color: #94a3b8; margin-top: 2px; }
+  .status-pill {
+    margin-left: auto;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    background: #1a2e1a;
+    color: #4ade80;
+    border: 1px solid #166534;
+  }
+  .status-pill.offline { background: #2e1a1a; color: #f87171; border-color: #991b1b; }
+
+  /* ── Main layout ── */
+  .container { max-width: 900px; margin: 0 auto; padding: 40px 20px; }
+
+  /* ── Tabs ── */
+  .tabs {
+    display: flex; gap: 4px;
+    background: #1a1f2e;
+    padding: 6px;
+    border-radius: 12px;
+    margin-bottom: 28px;
+    border: 1px solid #2d3748;
+  }
+  .tab {
+    flex: 1; padding: 10px;
+    border: none; border-radius: 8px;
+    background: transparent;
+    color: #94a3b8;
+    font-size: 14px; font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .tab.active {
+    background: #667eea;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(102,126,234,0.4);
+  }
+  .tab:hover:not(.active) { background: #2d3748; color: #e2e8f0; }
+
+  /* ── Card ── */
+  .card {
+    background: #1a1f2e;
+    border: 1px solid #2d3748;
+    border-radius: 16px;
+    padding: 28px;
+    margin-bottom: 20px;
+  }
+  .card h2 { font-size: 16px; font-weight: 600; margin-bottom: 6px; color: #e2e8f0; }
+  .card p  { font-size: 13px; color: #64748b; margin-bottom: 16px; }
+
+  /* ── Input ── */
+  textarea, input[type="text"] {
+    width: 100%;
+    background: #0f1117;
+    border: 1px solid #2d3748;
+    border-radius: 10px;
+    color: #e2e8f0;
+    font-size: 14px;
+    padding: 14px;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s;
+    font-family: inherit;
+  }
+  textarea { min-height: 110px; }
+  textarea:focus, input[type="text"]:focus {
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102,126,234,0.15);
+  }
+
+  /* ── Button ── */
+  .btn {
+    margin-top: 14px;
+    padding: 12px 28px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.1s;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .btn:hover   { opacity: 0.9; transform: translateY(-1px); }
+  .btn:active  { transform: translateY(0); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+  /* ── Examples ── */
+  .examples { margin-top: 14px; }
+  .examples p { font-size: 12px; color: #475569; margin-bottom: 8px; }
+  .example-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+  .chip {
+    padding: 5px 12px;
+    background: #0f1117;
+    border: 1px solid #2d3748;
+    border-radius: 20px;
+    font-size: 12px;
+    color: #94a3b8;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .chip:hover { border-color: #667eea; color: #667eea; }
+
+  /* ── Result ── */
+  .result { display: none; }
+  .result.show { display: block; }
+
+  .result-header {
+    display: flex; align-items: center; gap: 16px;
+    padding: 20px 24px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    border: 1px solid;
+  }
+  .result-header.critical { background: #1f0a0a; border-color: #7f1d1d; }
+  .result-header.high     { background: #1f150a; border-color: #7c2d12; }
+  .result-header.medium   { background: #1f1a0a; border-color: #78350f; }
+  .result-header.low      { background: #0a1f0a; border-color: #14532d; }
+
+  .threat-badge {
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .badge-critical { background: #7f1d1d; color: #fca5a5; }
+  .badge-high     { background: #7c2d12; color: #fdba74; }
+  .badge-medium   { background: #78350f; color: #fde68a; }
+  .badge-low      { background: #14532d; color: #86efac; }
+
+  .score-circle {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-weight: 700;
+    border: 3px solid;
+    flex-shrink: 0;
+  }
+  .score-circle .score-num  { font-size: 20px; line-height: 1; }
+  .score-circle .score-label { font-size: 9px; opacity: 0.7; margin-top: 2px; }
+  .score-critical { border-color: #ef4444; color: #ef4444; }
+  .score-high     { border-color: #f97316; color: #f97316; }
+  .score-medium   { border-color: #eab308; color: #eab308; }
+  .score-low      { border-color: #22c55e; color: #22c55e; }
+
+  .result-meta { flex: 1; }
+  .result-meta .category {
+    font-size: 17px; font-weight: 700; color: #f1f5f9;
+    margin-bottom: 4px;
+  }
+  .result-meta .verdict {
+    font-size: 13px; color: #94a3b8;
+  }
+
+  /* ── Score bar ── */
+  .score-bar-wrap { margin-bottom: 16px; }
+  .score-bar-label {
+    display: flex; justify-content: space-between;
+    font-size: 12px; color: #64748b; margin-bottom: 6px;
+  }
+  .score-bar-bg {
+    height: 8px; background: #0f1117;
+    border-radius: 4px; overflow: hidden;
+  }
+  .score-bar-fill {
+    height: 100%; border-radius: 4px;
+    transition: width 0.8s ease;
+  }
+
+  /* ── Breakdown grid ── */
+  .breakdown {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 10px; margin-bottom: 16px;
+  }
+  .breakdown-item {
+    background: #0f1117;
+    border: 1px solid #2d3748;
+    border-radius: 10px;
+    padding: 12px;
+    text-align: center;
+  }
+  .breakdown-item .eng-name {
+    font-size: 11px; color: #64748b; margin-bottom: 6px;
+  }
+  .breakdown-item .eng-score {
+    font-size: 22px; font-weight: 700;
+  }
+
+  /* ── Reasons ── */
+  .section-title {
+    font-size: 13px; font-weight: 600;
+    color: #94a3b8; text-transform: uppercase;
+    letter-spacing: 0.5px; margin-bottom: 10px;
+  }
+  .reason-item {
+    display: flex; align-items: flex-start; gap: 10px;
+    padding: 10px 14px;
+    background: #0f1117;
+    border: 1px solid #2d3748;
+    border-radius: 8px;
+    font-size: 13px; color: #cbd5e1;
+    margin-bottom: 8px;
+  }
+  .reason-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: #ef4444;
+    margin-top: 5px; flex-shrink: 0;
+  }
+
+  /* ── Advice ── */
+  .advice-box {
+    background: #0f2027;
+    border: 1px solid #164e63;
+    border-radius: 10px;
+    padding: 16px;
+    font-size: 13px;
+    color: #7dd3fc;
+    line-height: 1.6;
+    display: flex; gap: 12px; align-items: flex-start;
+  }
+  .advice-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+
+  /* ── Loading ── */
+  .loading {
+    display: none;
+    text-align: center; padding: 40px;
+    color: #64748b; font-size: 14px;
+  }
+  .loading.show { display: block; }
+  .spinner {
+    width: 36px; height: 36px;
+    border: 3px solid #2d3748;
+    border-top-color: #667eea;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 14px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── Error ── */
+  .error-box {
+    display: none;
+    background: #1f0a0a; border: 1px solid #7f1d1d;
+    border-radius: 10px; padding: 16px;
+    color: #fca5a5; font-size: 13px;
+  }
+  .error-box.show { display: block; }
+
+  @media (max-width: 600px) {
+    .breakdown { grid-template-columns: repeat(2, 1fr); }
+    .header { padding: 16px 20px; }
+    .container { padding: 20px 14px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-icon">🛡️</div>
+  <div>
+    <h1>AI Scam Shield</h1>
+    <p>AI-powered detection for phishing, SMS scams &amp; UPI fraud</p>
+  </div>
+  <div class="status-pill" id="status-pill">⬤ Checking...</div>
+</div>
+
+<div class="container">
+
+  <!-- Tabs -->
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('text')">💬 SMS / Text</button>
+    <button class="tab"        onclick="switchTab('url')">🔗 URL / Link</button>
+    <button class="tab"        onclick="switchTab('upi')">💳 UPI Prompt</button>
+  </div>
+
+  <!-- Text Tab -->
+  <div id="tab-text">
+    <div class="card">
+      <h2>Analyze SMS or Message</h2>
+      <p>Paste any suspicious SMS, WhatsApp message, or email text below</p>
+      <textarea id="text-input"
+        placeholder="e.g. Dear customer your SBI account is blocked. Update KYC at http://sbi-kyc.xyz immediately or your account will be suspended..."></textarea>
+      <button class="btn" onclick="analyze('text')">
+        <span>🔍</span> Analyze Message
+      </button>
+      <div class="examples">
+        <p>Try an example:</p>
+        <div class="example-chips">
+          <span class="chip" onclick="fillExample('text', 'Enter your UPI PIN to receive Rs 500 cashback from PhonePe rewards')">UPI PIN scam</span>
+          <span class="chip" onclick="fillExample('text', 'Your SBI account is blocked. Update KYC immediately at http://sbi-kyc-update.xyz or account will be closed')">KYC scam</span>
+          <span class="chip" onclick="fillExample('text', 'Congratulations! You won Rs 50000 in KBC lucky draw. Share your Aadhaar number to claim prize')">Lottery scam</span>
+          <span class="chip" onclick="fillExample('text', 'Your OTP is 291847. Valid for 10 minutes. Do not share with anyone. -SBI')">Legit OTP</span>
+          <span class="chip" onclick="fillExample('text', 'Your Swiggy order #1234 is on the way and will arrive in 20 minutes')">Legit delivery</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- URL Tab -->
+  <div id="tab-url" style="display:none">
+    <div class="card">
+      <h2>Analyze URL / Link</h2>
+      <p>Paste any suspicious link or URL to check for phishing indicators</p>
+      <input type="text" id="url-input"
+        placeholder="e.g. http://sbi-kyc-update.xyz/login/verify"/>
+      <button class="btn" onclick="analyze('url')">
+        <span>🔍</span> Analyze URL
+      </button>
+      <div class="examples">
+        <p>Try an example:</p>
+        <div class="example-chips">
+          <span class="chip" onclick="fillExample('url', 'http://sbi-kyc-update.xyz/login/verify')">Fake SBI</span>
+          <span class="chip" onclick="fillExample('url', 'http://192.168.1.1/hdfc/netbanking/login')">IP address URL</span>
+          <span class="chip" onclick="fillExample('url', 'http://paytm-kyc-verify-update-now.info/wallet/unblock')">Fake Paytm</span>
+          <span class="chip" onclick="fillExample('url', 'https://www.sbi.co.in')">Real SBI</span>
+          <span class="chip" onclick="fillExample('url', 'https://www.hdfcbank.com')">Real HDFC</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- UPI Tab -->
+  <div id="tab-upi" style="display:none">
+    <div class="card">
+      <h2>Analyze UPI Prompt</h2>
+      <p>Paste any UPI-related message, collect request description, or payment prompt</p>
+      <textarea id="upi-input"
+        placeholder="e.g. You have received a collect request of Rs 10 from SBI-KYC@upi. Accept to complete your KYC verification..."></textarea>
+      <button class="btn" onclick="analyze('upi')">
+        <span>🔍</span> Analyze UPI Prompt
+      </button>
+      <div class="examples">
+        <p>Try an example:</p>
+        <div class="example-chips">
+          <span class="chip" onclick="fillExample('upi', 'Enter your UPI PIN to receive Rs 2500 refund from Amazon')">PIN harvest</span>
+          <span class="chip" onclick="fillExample('upi', 'You have a collect request of Rs 10 from HDFC-REFUND@upi. Accept to receive your refund')">Collect request</span>
+          <span class="chip" onclick="fillExample('upi', 'Scan this QR code to receive your prize money of Rs 25000 from PhonePe lucky draw')">QR scam</span>
+          <span class="chip" onclick="fillExample('upi', 'Your PhonePe transaction of Rs 299 to Jio Recharge was successful')">Legit UPI</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading" id="loading">
+    <div class="spinner"></div>
+    Analyzing with AI engines...
+  </div>
+
+  <!-- Error -->
+  <div class="error-box" id="error-box"></div>
+
+  <!-- Result -->
+  <div class="result card" id="result">
+
+    <!-- Result header -->
+    <div class="result-header" id="result-header">
+      <div class="score-circle" id="score-circle">
+        <span class="score-num"  id="score-num">0</span>
+        <span class="score-label">RISK</span>
+      </div>
+      <div class="result-meta">
+        <div class="category" id="result-category">—</div>
+        <div class="verdict"  id="result-verdict">—</div>
+      </div>
+      <div class="threat-badge" id="threat-badge">—</div>
+    </div>
+
+    <!-- Score bar -->
+    <div class="score-bar-wrap">
+      <div class="score-bar-label">
+        <span>Risk Score</span>
+        <span id="score-pct">0 / 100</span>
+      </div>
+      <div class="score-bar-bg">
+        <div class="score-bar-fill" id="score-bar" style="width:0%"></div>
+      </div>
+    </div>
+
+    <!-- Engine breakdown -->
+    <div class="section-title">Engine Breakdown</div>
+    <div class="breakdown">
+      <div class="breakdown-item">
+        <div class="eng-name">Rule Engine</div>
+        <div class="eng-score" id="bd-rule">—</div>
+      </div>
+      <div class="breakdown-item">
+        <div class="eng-name">ML Engine</div>
+        <div class="eng-score" id="bd-ml">—</div>
+      </div>
+      <div class="breakdown-item">
+        <div class="eng-name">URL Engine</div>
+        <div class="eng-score" id="bd-url">—</div>
+      </div>
+      <div class="breakdown-item">
+        <div class="eng-name">UPI Engine</div>
+        <div class="eng-score" id="bd-upi">—</div>
+      </div>
+    </div>
+
+    <!-- Reasons -->
+    <div id="reasons-section" style="display:none; margin-bottom:16px;">
+      <div class="section-title">Why flagged</div>
+      <div id="reasons-list"></div>
+    </div>
+
+    <!-- Advice -->
+    <div id="advice-section" style="display:none;">
+      <div class="section-title">What you should do</div>
+      <div class="advice-box">
+        <span class="advice-icon">💡</span>
+        <span id="advice-text"></span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  const API = 'http://localhost:8001';
+  let activeTab = 'text';
+
+  // ── Check API health on load ─────────────────────────────────────────────
+  async function checkHealth() {
+    try {
+      const r = await fetch(`${API}/health`);
+      const d = await r.json();
+      const pill = document.getElementById('status-pill');
+      if (d.status === 'ok') {
+        pill.textContent = '⬤ API Online';
+        pill.className   = 'status-pill';
+      } else {
+        pill.textContent = '⬤ API Offline';
+        pill.className   = 'status-pill offline';
+      }
+    } catch {
+      const pill = document.getElementById('status-pill');
+      pill.textContent = '⬤ API Offline';
+      pill.className   = 'status-pill offline';
+    }
+  }
+  checkHealth();
+
+  // ── Tab switching ────────────────────────────────────────────────────────
+  function switchTab(tab) {
+    activeTab = tab;
+    ['text','url','upi'].forEach(t => {
+      document.getElementById(`tab-${t}`).style.display = t === tab ? 'block' : 'none';
+    });
+    document.querySelectorAll('.tab').forEach((el, i) => {
+      el.classList.toggle('active', ['text','url','upi'][i] === tab);
+    });
+    hideResult();
+  }
+
+  // ── Fill example ─────────────────────────────────────────────────────────
+  function fillExample(tab, text) {
+    switchTab(tab);
+    const id = tab === 'url' ? 'url-input' : `${tab}-input`;
+    document.getElementById(id).value = text;
+  }
+
+  // ── Main analyze function ────────────────────────────────────────────────
+  async function analyze(type) {
+    const inputId = type === 'url' ? 'url-input' : `${type}-input`;
+    const value   = document.getElementById(inputId).value.trim();
+
+    if (!value) {
+      showError('Please enter some text or URL to analyze.');
+      return;
+    }
+
+    showLoading();
+
+    try {
+      const endpoint = `${API}/analyze/${type}`;
+      const body     = type === 'url' ? { url: value } : { text: value };
+
+      const response = await fetch(endpoint, {
+        method:  'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body:    JSON.stringify(body),
+      });
+
+      if (!response.ok) {
+        const err = await response.json();
+        throw new Error(err.detail || `HTTP ${response.status}`);
+      }
+
+      const data = await response.json();
+      showResult(data);
+
+    } catch (err) {
+      showError(
+        err.message.includes('fetch')
+          ? 'Cannot connect to API. Make sure the server is running on port 8001.'
+          : `Error: ${err.message}`
+      );
+    }
+  }
+
+  // ── Show result ───────────────────────────────────────────────────────────
+  function showResult(data) {
+    hideLoading();
+    hideError();
+
+    const score  = Math.round(data.risk_score);
+    const level  = (data.threat_level || 'Low').toLowerCase();
+    const colors = {
+      critical: { bar: '#ef4444', score: 'score-critical', badge: 'badge-critical', header: 'critical' },
+      high:     { bar: '#f97316', score: 'score-high',     badge: 'badge-high',     header: 'high'     },
+      medium:   { bar: '#eab308', score: 'score-medium',   badge: 'badge-medium',   header: 'medium'   },
+      low:      { bar: '#22c55e', score: 'score-low',      badge: 'badge-low',      header: 'low'      },
+    };
+    const c = colors[level] || colors.low;
+
+    // Score circle
+    document.getElementById('score-num').textContent = score;
+    const circle = document.getElementById('score-circle');
+    circle.className = `score-circle ${c.score}`;
+
+    // Score bar
+    document.getElementById('score-bar').style.width      = `${score}%`;
+    document.getElementById('score-bar').style.background = c.bar;
+    document.getElementById('score-pct').textContent      = `${score} / 100`;
+
+    // Header
+    const header = document.getElementById('result-header');
+    header.className = `result-header ${c.header}`;
+
+    // Badge
+    const badge = document.getElementById('threat-badge');
+    badge.textContent = data.threat_level;
+    badge.className   = `threat-badge ${c.badge}`;
+
+    // Category and verdict
+    document.getElementById('result-category').textContent = data.category || '—';
+    document.getElementById('result-verdict').textContent  = data.is_scam
+      ? '⚠️  This appears to be a scam'
+      : '✅  This appears to be safe';
+
+    // Engine breakdown
+    const bd = data.score_breakdown || {};
+    document.getElementById('bd-rule').textContent = Math.round(bd.rule_engine ?? 0);
+    document.getElementById('bd-ml').textContent   = Math.round(bd.ml_engine   ?? 0);
+    document.getElementById('bd-url').textContent  = Math.round(bd.url_engine  ?? 0);
+    document.getElementById('bd-upi').textContent  = Math.round(bd.upi_engine  ?? 0);
+
+    // Color engine scores
+    ['bd-rule','bd-ml','bd-url','bd-upi'].forEach(id => {
+      const val = parseInt(document.getElementById(id).textContent);
+      document.getElementById(id).style.color =
+        val >= 70 ? '#ef4444' :
+        val >= 40 ? '#eab308' :
+        val >= 20 ? '#f97316' : '#22c55e';
+    });
+
+    // Reasons
+    const reasons = data.reasons || [];
+    const rSection = document.getElementById('reasons-section');
+    if (reasons.length > 0) {
+      rSection.style.display = 'block';
+      document.getElementById('reasons-list').innerHTML = reasons
+        .map(r => `<div class="reason-item"><div class="reason-dot"></div><span>${r}</span></div>`)
+        .join('');
+    } else {
+      rSection.style.display = 'none';
+    }
+
+    // Advice
+    const aSection = document.getElementById('advice-section');
+    if (data.advice) {
+      aSection.style.display = 'block';
+      document.getElementById('advice-text').textContent = data.advice;
+    } else {
+      aSection.style.display = 'none';
+    }
+
+    document.getElementById('result').className = 'result card show';
+    document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // ── UI helpers ────────────────────────────────────────────────────────────
+  function showLoading()  {
+    document.getElementById('loading').className = 'loading show';
+    document.getElementById('result').className  = 'result card';
+    hideError();
+  }
+  function hideLoading()  { document.getElementById('loading').className = 'loading'; }
+  function hideResult()   { document.getElementById('result').className  = 'result card'; }
+  function showError(msg) {
+    hideLoading();
+    const el = document.getElementById('error-box');
+    el.textContent = `⚠️  ${msg}`;
+    el.className   = 'error-box show';
+  }
+  function hideError() {
+    document.getElementById('error-box').className = 'error-box';
+  }
+
+  // Allow Enter key in URL input
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('url-input')
+      .addEventListener('keydown', e => {
+        if (e.key === 'Enter') analyze('url');
+      });
+  });
+</script>
+</body>
+</html>

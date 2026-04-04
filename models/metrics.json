@@ -1,0 +1,10 @@
+{
+  "test_accuracy": 0.9822,
+  "test_precision": 0.9531,
+  "test_recall": 0.9313,
+  "test_f1": 0.9421,
+  "train_rows": 3941,
+  "val_rows": 844,
+  "test_rows": 845,
+  "vocab_size": 9132
+}
