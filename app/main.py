@@ -592,3 +592,39 @@ def analyze_all(request: FullAnalysisRequest):
     except Exception as e:
         logger.error(f"Error in analyze/all: {e}")
         raise HTTPException(status_code=500, detail=str(e))
+
+
+@app.get("/", tags=["System"])
+def root():
+    """Root endpoint — confirms API is running."""
+    return {
+        "name":        "AI Scam Shield",
+        "version":     "1.0.0",
+        "status":      "running",
+        "description": "AI-powered scam detection API",
+        "endpoints": {
+            "health":       "/health",
+            "docs":         "/docs",
+            "analyze_text": "/analyze/text",
+            "analyze_url":  "/analyze/url",
+            "analyze_upi":  "/analyze/upi",
+        }
+    }
+
+
+@app.get("/", tags=["System"])
+def root():
+    """Root endpoint — confirms API is running."""
+    return {
+        "name":        "AI Scam Shield",
+        "version":     "1.0.0",
+        "status":      "running",
+        "description": "AI-powered scam detection API",
+        "endpoints": {
+            "health":       "/health",
+            "docs":         "/docs",
+            "analyze_text": "/analyze/text",
+            "analyze_url":  "/analyze/url",
+            "analyze_upi":  "/analyze/upi",
+        }
+    }
