@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  ai-scam-shield:
+    build: .
+    container_name: ai-scam-shield
+    ports:
+      - "8000:8000"
+    volumes:
+      # Mount models folder so you can update model without rebuilding
+      - ./models:/app/models
+    environment:
+      - APP_ENV=production
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python3", "-c",
+             "import urllib.request; urllib.request.urlopen('http://localhost:8000/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
