@@ -41,3 +41,4 @@ URL_MAX_SCORE = 100
 APP_TITLE       = "AI Scam Shield"
 APP_VERSION     = "1.0.0"
 APP_DESCRIPTION = "AI-powered detection for phishing, SMS scams, and UPI fraud"
+# CI verified Mon Apr 27 00:49:36 IST 2026
