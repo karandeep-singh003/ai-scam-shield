@@ -1,4 +1,4 @@
-name: AI Scam Shield CI
+name: AI Scam Shield CI Pipeline
 
 on:
   push:
@@ -9,12 +9,11 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-
     steps:
-    - name: Checkout code
+    - name: Checkout repository
       uses: actions/checkout@v3
 
-    - name: Set up Python
+    - name: Set up Python 3.11
       uses: actions/setup-python@v4
       with:
         python-version: '3.11'
@@ -24,7 +23,7 @@ jobs:
         python -m pip install --upgrade pip
         pip install -r requirements.txt
 
-    - name: Run rule engine tests
+    - name: Run Rule Engine unit tests
       run: |
         pytest tests/test_rule_engine.py -v
 
@@ -42,16 +41,16 @@ jobs:
           print(f'{f}: {status}')
         "
 
-    - name: Verify API imports correctly
+    - name: Verify all engine imports work
       run: |
         python3 -c "
         from app.engines.rule_engine import analyze_text
         from app.engines.url_engine import analyze_url
         from app.engines.upi_engine import analyze_upi
         from app.engines.risk_scorer import calculate_risk
-        print('All engine imports successful')
-        result = analyze_text('Enter your UPI PIN to receive Rs 500')
-        print(f'Rule engine test score: {result[\"score\"]}')
-        assert result['score'] >= 70, 'Rule engine score too low'
-        print('API import and engine test passed')
+        print('All engine imports: OK')
+        r = analyze_text('Enter your UPI PIN to receive Rs 500')
+        print(f'Rule engine score: {r[\"score\"]}')
+        assert r['score'] >= 70
+        print('Engine smoke test: PASSED')
         "
