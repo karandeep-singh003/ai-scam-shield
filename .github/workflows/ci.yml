@@ -1,0 +1,57 @@
+name: AI Scam Shield CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+
+    - name: Run rule engine tests
+      run: |
+        pytest tests/test_rule_engine.py -v
+
+    - name: Verify model files exist
+      run: |
+        python3 -c "
+        import os
+        files = [
+          'models/scam_classifier.pkl',
+          'models/tfidf_vectorizer.pkl',
+          'models/metrics.json'
+        ]
+        for f in files:
+          status = 'OK' if os.path.exists(f) else 'MISSING'
+          print(f'{f}: {status}')
+        "
+
+    - name: Verify API imports correctly
+      run: |
+        python3 -c "
+        from app.engines.rule_engine import analyze_text
+        from app.engines.url_engine import analyze_url
+        from app.engines.upi_engine import analyze_upi
+        from app.engines.risk_scorer import calculate_risk
+        print('All engine imports successful')
+        result = analyze_text('Enter your UPI PIN to receive Rs 500')
+        print(f'Rule engine test score: {result[\"score\"]}')
+        assert result['score'] >= 70, 'Rule engine score too low'
+        print('API import and engine test passed')
+        "
